@@ -6,4 +6,4 @@
 *.tfstate.*
 
 # tf varaibale file
-*.tfvars
+*.tfvars 
