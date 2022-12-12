@@ -3,6 +3,7 @@ variable "vpc_cidr_blk" {}
 variable "avail_zone" {}
 variable "subnet_cidr_blk" {}
 variable "env_prefix" {}
+variable my_ip {}
 
 
 # create a provide
@@ -92,3 +93,41 @@ resource "aws_default_route_table" "default-rbt"{
 }
 
 # create a fire wall rule
+resource "aws_security_group" "myapp_sg"{ 
+  name = "myapp_sg"
+  vpc_id = aws_vpc.myapp-vpc.id
+  
+
+  # here u define the firewall rule of d sg 
+  # incoming traffic >> ingress   | outgoing is >>egress
+
+  ingress {
+    from_port = 22 
+    to_port = 22 # u can configure a range > from = 0 to = 1000
+    protocol = "tcp"
+     
+    cidr_blocks = [var.my_ip]   
+  }
+  
+  # for port 8080
+  ingress {
+    from_port = 8080
+    to_port = 8080 # u can configure a range > from = 0 to = 1000
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # list of ip address that can access the port 22
+
+  }
+
+  #  outgoing is >>egress | to leave the vpc 
+  egress {
+    from_port = 0 # from any 
+    to_port = 0 # to port
+    protocol = "-1" # any protocol
+    cidr_blocks = ["0.0.0.0/0"]  # list of ip address that can access the port 22
+
+  }
+  tags = {
+    Name = "${var.env_prefix}-sg"
+   
+  }
+}

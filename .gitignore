@@ -7,3 +7,5 @@
 
 # tf varaibale file
 *.tfvars 
+# note to know where i staand
+*.txt
